@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -cv -E \"^\\(\\\\s*#|\\\\s*$\\)\" input/phrases.txt)"
+    ]
+  }
+}
