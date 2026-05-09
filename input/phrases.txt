@@ -24,7 +24,6 @@ the naive solution would be
 if I had to guess
 I keep coming back to
 the obvious move is
-I'm tempted to
 let me reason through this
 the way I'd model this is
 the mental model I have is
@@ -52,7 +51,6 @@ let me make sure I get this right
 
 # --- Recovering / correcting ---
 
-I misspoke
 scratch that
 on second thought
 I take that back
@@ -107,7 +105,6 @@ let me think about overflow
 at a high level
 the main components are
 the data flows like this
-the read path versus the write path
 we'd want to cache
 this needs to be eventually consistent
 let me start with the simplest version
@@ -145,12 +142,8 @@ where I added the most value was
 
 # --- Asking the interviewer ---
 I'd love to know
-what's a typical day like
 how does the team approach
-what brought you to this team
-what's the biggest challenge
 how do decisions get made
-what does success look like
 what's the team currently working on
 is there anything I haven't asked
 what would make someone successful here
