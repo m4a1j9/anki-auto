@@ -1,0 +1,16 @@
+[project]
+name = "anki-auto"
+version = "0.1.0"
+description = "Generate Anki cards for tech-interview English from a curated phrase list."
+requires-python = ">=3.10"
+
+[tool.poe.tasks]
+setup  = { cmd = "pip install -r requirements.txt", help = "Install Python dependencies." }
+build  = { cmd = "python -m src.main",              help = "Build deck with default examples (2)." }
+build1 = { cmd = "python -m src.main -n 1",         help = "Build deck with 1 example per phrase." }
+build2 = { cmd = "python -m src.main -n 1",         help = "Build deck with 2 examples per phrase." }
+build3 = { cmd = "python -m src.main -n 3",         help = "Build deck with 3 examples per phrase." }
+
+[tool.poe.tasks.clean]
+cmd = "python -c \"import shutil; [shutil.rmtree(d, ignore_errors=True) for d in ('output', 'media')]\""
+help = "Remove generated deck and audio cache."
