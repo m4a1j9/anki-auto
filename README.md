@@ -7,7 +7,14 @@ Each phrase becomes one card per example sentence:
 - **Front:** an example sentence using the phrase, in real frontend / web-dev interview register.
 - **Back:** the same sentence + the target phrase + Russian translation (with web-dev anglicisms where natural) + an ElevenLabs audio clip.
 
-Pipeline: `input/phrases.txt` → Claude Sonnet (translation + N examples as JSON) → ElevenLabs Multilingual v2 TTS → `genanki` → `output/interview.apkg`.
+Pipeline: `input/<deck/path>/index.txt` → Claude Sonnet (translation + N examples as JSON, using the template named in `setup.toml`) → ElevenLabs Multilingual v2 TTS → `genanki` → `output/<deck/path>.apkg`.
+
+Each deck lives in its own directory under `input/`. The directory path becomes the Anki deck name (`/` → `::`). Two decks ship out of the box:
+
+- `input/English/phrases/interview/` — frontend tech-interview register (deck `English::phrases::interview`)
+- `input/English/common/` — everyday vocabulary (deck `English::common`)
+
+Add your own by creating `input/<your/path>/` with two files: `index.txt` (one phrase per line) and `setup.toml` (which prompt template to use).
 
 ## Setup
 
@@ -23,18 +30,33 @@ If `Activate.ps1` is blocked: `Set-ExecutionPolicy -Scope CurrentUser -Execution
 
 ## Usage
 
-Curate `input/phrases.txt` (one phrase per line; lines starting with `#` are skipped). Then:
+Curate `input/<deck/path>/index.txt` (one phrase per line; lines starting with `#` are skipped). Then:
 
 ```powershell
-poe build       # default: 2 examples per phrase
-poe build1      # 1 example per phrase
-poe build3      # 3 examples per phrase
-poe build -- -n 5    # arbitrary count
-poe clean       # wipe output/ and media/
-poe             # list all tasks
+poe build-interview                              # English::phrases::interview
+poe build-common                                 # English::common
+poe build -- -p English/common                   # any deck by path
+poe clean                                        # wipe output/ and media/
+poe                                              # list all tasks
 ```
 
-Output lands at `output/interview.apkg`. Import into Anki with **File → Import** (or `Ctrl+Shift+I`). The deck is created at `English::phrases::interview`.
+Output lands at `output/<deck/path>.apkg`. Import into Anki with **File → Import** (or `Ctrl+Shift+I`). The Anki deck name mirrors the directory path with `/` replaced by `::`.
+
+## Adding a new deck
+
+1. Create a directory `input/<your/path>/` — the path becomes the Anki deck name.
+2. Add `index.txt` with one phrase per line (`#` lines are skipped).
+3. Add `setup.toml` pointing at a prompt template:
+
+   ```toml
+   prompt = "common"            # required: name of prompts/<name>.txt
+   num_examples = 1             # optional: default 1
+   model = "claude-sonnet-4-6"  # optional: any Claude model id
+   ```
+
+4. Run `poe build -- -p <your/path>`.
+
+If you need a new prompt style, drop a template into `prompts/<name>.txt` — it must contain `{n}` and `{example_slots}` placeholders and escape literal JSON braces as `{{` / `}}` (see `prompts/interview.txt`).
 
 ## Configuration
 
@@ -46,7 +68,6 @@ All knobs live in `.env`:
 | `ELEVENLABS_API_KEY`   | —                         | Required.                                     |
 | `ELEVENLABS_VOICE_ID`  | `nPczCjzI2devNBz1zQrb`    | Brian. Pick one and stick with it.            |
 | `ELEVENLABS_MODEL`     | `eleven_multilingual_v2`  | Use `eleven_turbo_v2_5` for cheap iteration.  |
-| `NUM_EXAMPLES`         | `2`                       | Overridden by `-n` / `--examples` CLI flag.   |
 
 ## Re-runs are safe
 
@@ -61,24 +82,35 @@ Per 100 phrases at 2 examples each (200 cards):
 - Claude Sonnet 4.6 translations: ~$2
 - ElevenLabs Multilingual v2 TTS: ~$3–4
 
-Drop to Haiku (`claude-haiku-4-5-20251001` in `src/translator.py`) and Turbo (`eleven_turbo_v2_5` in `.env`) for ~10× cheaper iteration while you're tuning the prompt.
+Drop to Haiku — set `model = "claude-haiku-4-5-20251001"` in the deck's `setup.toml`, and switch to Turbo (`eleven_turbo_v2_5` in `.env`) — for ~10× cheaper iteration while you're tuning a prompt.
 
 ## Project layout
 
 ```
 anki-auto/
-├── input/phrases.txt        # curated phrase list (you edit this)
-├── output/interview.apkg    # generated deck (gitignored)
-├── media/                   # audio cache (gitignored)
+├── prompts/                            # Claude prompt templates (flat)
+│   ├── interview.txt
+│   └── common.txt
+├── input/                              # one directory per deck (you edit these)
+│   └── English/
+│       ├── common/
+│       │   ├── index.txt               # phrases, one per line
+│       │   └── setup.toml              # prompt = "common"
+│       └── phrases/
+│           └── interview/
+│               ├── index.txt
+│               └── setup.toml          # prompt = "interview"
+├── output/<deck/path>.apkg             # generated decks (gitignored)
+├── media/                              # audio cache (gitignored)
 ├── src/
-│   ├── main.py              # CLI orchestrator
-│   ├── translator.py        # Claude prompt — the highest-leverage file
-│   ├── tts.py               # ElevenLabs synthesis with on-disk cache
-│   └── deck.py              # genanki model + deck builder
-├── pyproject.toml           # poethepoet task definitions
+│   ├── main.py                         # CLI orchestrator + deck discovery
+│   ├── translator.py                   # loads prompts/<name>.txt and calls Claude
+│   ├── tts.py                          # ElevenLabs synthesis with on-disk cache
+│   └── deck.py                         # genanki model + deck builder
+├── pyproject.toml                      # poethepoet task definitions
 └── requirements.txt
 ```
 
 ## Tweaking quality
 
-The translation prompt in `src/translator.py` is the single highest-leverage file in the repo. After every batch, look at a handful of generated cards and adjust the prompt — it's where 90% of the quality lives, not in the code.
+The files in `prompts/` are the single highest-leverage spot in the repo. After every batch, look at a handful of generated cards and adjust the relevant prompt — it's where 90% of the quality lives, not in the code.

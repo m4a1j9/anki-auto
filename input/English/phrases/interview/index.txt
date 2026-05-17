@@ -1,0 +1,105 @@
+# =============================================================
+# Tech-interview English phrase bank
+# Curate this list — delete anything that doesn't feel natural
+# to you, or that you'd never actually say. Less is more.
+# Lines starting with # are skipped.
+# =============================================================
+
+# --- Recovering / correcting ---
+
+# scratch that
+# on second thought
+# I take that back
+# wait, I see what I missed
+# let me rethink this
+# I jumped ahead of myself
+# I want to revisit
+# come to think of it
+# let me unwind that
+# 
+# # --- Coding / implementation talk ---
+# the way this would work is
+# I'll start by
+# let me trace through it
+# on each iteration
+# this returns early when
+# I'll factor this out into
+# I'll come back to this in a minute
+# let me sketch it out first
+# I want to keep this simple
+# I'll handle the happy path first
+# I'll deal with that case in a second
+# let me pseudocode this
+# 
+# # --- Complexity / performance ---
+# the time complexity is
+# the space complexity is
+# this runs in linear time
+# this is quadratic in the worst case
+# amortized constant
+# we can do better than that
+# the bottleneck is
+# this scales with
+# big-O wise
+# in the average case
+# 
+# # --- Edge cases / testing ---
+# one edge case to think about
+# what happens if it's empty
+# what if the input is null
+# the boundary case here is
+# I'd want to test this with
+# the failure mode would be
+# this could blow up if
+# the assumption I'm making is
+# I'm going to handle that separately
+# a tricky case is
+# off-by-one is the risk
+# let me think about overflow
+# 
+# # --- System design talk ---
+# at a high level
+# the main components are
+# the data flows like this
+# we'd want to cache
+# this needs to be eventually consistent
+# let me start with the simplest version
+# the back-of-the-envelope number is
+# to scale this we'd
+# the failure mode I'm worried about
+# the source of truth is
+# this fans out to
+# 
+# # --- Disagreement / pushback ---
+# I see your point but
+# I'd push back on that
+# the way I'd argue it is
+# I'm not sure I agree
+# can you help me see why
+# the case for the other approach is
+# I'd want to validate that with data
+# I'd be cautious about that
+# what would change my mind is
+# I lean the other way because
+# 
+# # --- Behavioral / STAR ---
+# the situation was
+# my role on that was
+# the action I took was
+# the outcome was
+# looking back
+# what I learned from that is
+# if I were doing it again
+# the hardest part was
+# the team was struggling with
+# I took the lead on
+# the impact of that was
+# where I added the most value was
+# 
+# # --- Asking the interviewer ---
+# I'd love to know
+# how does the team approach
+# how do decisions get made
+# what's the team currently working on
+# is there anything I haven't asked
+# what would make someone successful here

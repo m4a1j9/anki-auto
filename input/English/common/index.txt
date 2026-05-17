@@ -1,0 +1,10 @@
+# =============================================================
+# Everyday English vocabulary
+# Common words, collocations, and idiomatic phrases for general
+# fluency — not tied to tech/work context.
+# One per line. Lines starting with # are skipped.
+# =============================================================
+
+tedious
+# vast
+# who knows the drill

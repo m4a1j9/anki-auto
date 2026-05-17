@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -cv -E \"^\\(\\\\s*#|\\\\s*$\\)\" input/phrases.txt)"
+      "Bash(grep -cv -E \"^\\(\\\\s*#|\\\\s*$\\)\" input/phrases.txt)",
+      "Bash(git mv *)",
+      "Bash(.venv/Scripts/python.exe *)"
     ]
   }
 }

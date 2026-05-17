@@ -1,7 +1,7 @@
+import hashlib
 import genanki
 
 MODEL_ID = 1872934401
-DECK_ID = 2034871193
 
 MODEL = genanki.Model(
     MODEL_ID,
@@ -53,8 +53,14 @@ MODEL = genanki.Model(
 )
 
 
-def build_deck(cards: list[dict], out_path: str):
-    deck = genanki.Deck(DECK_ID, "English::phrases::interview")
+def _deck_id_for(name: str) -> int:
+    # genanki wants a stable int. Hash the deck name into a 31-bit positive int.
+    h = hashlib.md5(name.encode("utf-8")).digest()
+    return int.from_bytes(h[:4], "big") & 0x7FFFFFFF
+
+
+def build_deck(cards: list[dict], out_path: str, deck_name: str = "English::phrases::interview"):
+    deck = genanki.Deck(_deck_id_for(deck_name), deck_name)
     media_files = []
 
     for c in cards:
