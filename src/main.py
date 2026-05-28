@@ -8,7 +8,7 @@ load_dotenv()
 from src.translator import translate, DEFAULT_MODEL
 from src.tts import synthesize
 from src.deck import build_deck
-from src.learned import record_learned, drop_lines_from_index
+from src.learned import record_learned, drop_lines_from_index, parse_index_line
 
 INPUT_ROOT = Path("input")
 OUTPUT_ROOT = Path("output")
@@ -39,15 +39,19 @@ def load_setup(deck_dir: Path) -> dict:
     return setup
 
 
-def read_phrases(path: Path) -> list[str]:
-    lines = path.read_text(encoding="utf-8").splitlines()
-    return [l.strip() for l in lines if l.strip() and not l.strip().startswith("#")]
+def read_phrases(path: Path) -> list[tuple[str, str | None]]:
+    out = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        phrase, sentence = parse_index_line(line)
+        if phrase:
+            out.append((phrase, sentence))
+    return out
 
 
-def build_cards_for(phrase: str, num_examples: int, prompt_name: str, model: str) -> list[dict]:
-    print(f"→ {phrase}")
+def build_cards_for(phrase: str, sentence: str | None, num_examples: int, prompt_name: str, model: str) -> list[dict]:
+    print(f"→ {phrase}" + ("  (draft sentence)" if sentence else ""))
     try:
-        data = translate(phrase, num_examples=num_examples, prompt_name=prompt_name, model=model)
+        data = translate(phrase, num_examples=num_examples, prompt_name=prompt_name, model=model, sentence=sentence)
     except Exception as e:
         print(f"  ✗ translate failed: {e}")
         return []
@@ -111,11 +115,11 @@ def main():
     )
     all_cards = []
     learned_now = []
-    for p in phrases:
-        cards = build_cards_for(p, num_examples=num_examples, prompt_name=prompt_name, model=model)
+    for phrase, sentence in phrases:
+        cards = build_cards_for(phrase, sentence, num_examples=num_examples, prompt_name=prompt_name, model=model)
         if cards:
             all_cards.extend(cards)
-            learned_now.append(p)
+            learned_now.append(phrase)
     if not all_cards:
         print("No cards built. Check API keys and input.")
         return

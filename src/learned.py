@@ -1,6 +1,23 @@
 import json
 from pathlib import Path
 
+DELIMITER = "|"
+
+
+def parse_index_line(line: str) -> tuple[str | None, str | None]:
+    """Split a raw index line into (phrase, sentence).
+
+    Returns (None, None) for blank lines and comments. A line may carry an
+    optional draft sentence after a '|': 'phrase | draft sentence'.
+    """
+    stripped = line.strip()
+    if not stripped or stripped.startswith("#"):
+        return None, None
+    if DELIMITER in stripped:
+        phrase, sentence = stripped.split(DELIMITER, 1)
+        return phrase.strip(), (sentence.strip() or None)
+    return stripped, None
+
 
 def load_learned(path: Path) -> dict[str, int]:
     if not path.is_file():
@@ -23,10 +40,12 @@ def record_learned(phrases: list[str], path: Path) -> dict[str, int]:
 
 def drop_lines_from_index(index_path: Path, phrases: set[str]) -> None:
     lines = index_path.read_text(encoding="utf-8").splitlines()
-    kept = [
-        line for line in lines
-        if not (line.strip() and not line.strip().startswith("#") and line.strip() in phrases)
-    ]
+    kept = []
+    for line in lines:
+        phrase, _ = parse_index_line(line)
+        if phrase is not None and phrase in phrases:
+            continue
+        kept.append(line)
     text = "\n".join(kept)
     if text:
         text += "\n"

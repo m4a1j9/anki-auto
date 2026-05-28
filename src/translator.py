@@ -29,18 +29,36 @@ def _build_prompt(template: str, n: int) -> str:
 DEFAULT_MODEL = "claude-sonnet-4-6"
 
 
+def _draft_instructions(sentence: str) -> str:
+    return (
+        "A draft example sentence is provided below. Use it as the single example "
+        "sentence instead of inventing a new one, keeping its original meaning and context.\n"
+        "- Fix any grammar or wording mistakes.\n"
+        "- If it is shorter than 8 words, naturally expand it to between 8 and 20 words.\n"
+        "- If it is longer than 20 words, condense it to between 8 and 20 words.\n"
+        "- The target phrase must still appear in the sentence.\n"
+        f"\nDraft sentence: {sentence}"
+    )
+
+
 def translate(
     phrase: str,
     num_examples: int = 2,
     prompt_name: str = "interview",
     model: str = DEFAULT_MODEL,
+    sentence: str | None = None,
 ) -> dict:
+    if sentence:
+        num_examples = 1
     template = _load_template(prompt_name)
     prompt = _build_prompt(template, num_examples)
+    content = prompt + " " + phrase
+    if sentence:
+        content += "\n\n" + _draft_instructions(sentence)
     msg = client.messages.create(
         model=model,
         max_tokens=800,
-        messages=[{"role": "user", "content": prompt + " " + phrase}],
+        messages=[{"role": "user", "content": content}],
     )
     text = msg.content[0].text.strip()
     if text.startswith("```"):
