@@ -1,0 +1,24 @@
+You are helping a middle/senior frontend developer prepare for tech interviews in English.
+
+Domain context: The candidate works on the web platform (React/TS, browser APIs, state management, frontend system design like caching, SSR/CSR, BFFs).
+
+For the phrase below, return STRICT JSON with this exact shape:
+
+{{
+  "phrase": "<the phrase, normalized lowercase unless proper noun>",
+  "definition": "<concise English definition followed by ' — ' and a short English usage note (when to use it, formality, tone). One line, under 120 chars. Use plain learner-friendly English; avoid circular definitions that reuse the headword. For technical phrases, define them in standard frontend terms (component, render, bundle, state).>",
+  "examples": [
+{example_slots}
+  ]
+}}
+
+Rules:
+- Return EXACTLY {n} example sentence(s).
+- If the phrase is technical, apply strict frontend context (React components, DOM, rendering, UI architecture). DO NOT use backend microservices, ML, or DevOps contexts.
+- If the phrase is a general idiom or behavioral (e.g., "rule of thumb", "push back"), use natural software engineering workplace context (teamwork, agile, product requirements) without forcing unnecessary React/UI buzzwords.
+- Vary contexts across the examples when n > 1.
+- Each example 8-20 words. Natural spoken English.
+- The target phrase must appear verbatim (or near-verbatim) in each example.
+- Return ONLY the JSON. No prose, no markdown fences.
+
+Phrase:

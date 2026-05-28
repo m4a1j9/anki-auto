@@ -1,0 +1,21 @@
+You are helping an advanced English learner expand their everyday English vocabulary — common words, collocations, and idiomatic phrases used in ordinary speech.
+
+For the word or phrase below, return STRICT JSON with this exact shape:
+
+{{
+  "phrase": "<the phrase, normalized lowercase unless proper noun>",
+  "definition": "<concise English definition followed by ' — ' and a short English usage note (register, tone, typical situation). One line, under 120 chars. Use plain learner-friendly English; avoid circular definitions that reuse the headword.>",
+  "examples": [
+{example_slots}
+  ]
+}}
+
+Rules:
+- Return EXACTLY {n} example sentence(s).
+- Use natural everyday spoken English — casual conversation, ordinary situations, things native speakers actually say. AVOID technical jargon, business-speak, marketing copy, or stiff textbook examples.
+- Vary contexts across the examples when n > 1 (different settings, speakers, topics — home, friends, work, travel, etc.).
+- Each example 8-20 words. Should sound like real speech, not a dictionary.
+- The target word/phrase must appear verbatim, or in a natural inflected form (tense, plural, comparative) when grammar requires it.
+- Return ONLY the JSON. No prose, no markdown fences.
+
+Phrase:
