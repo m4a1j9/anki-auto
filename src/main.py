@@ -8,9 +8,11 @@ load_dotenv()
 from src.translator import translate, DEFAULT_MODEL
 from src.tts import synthesize
 from src.deck import build_deck
+from src.learned import record_learned, drop_lines_from_index
 
 INPUT_ROOT = Path("input")
 OUTPUT_ROOT = Path("output")
+LEARNED_FILE = OUTPUT_ROOT / "learned.json"
 SETUP_FILE = "setup.toml"
 INDEX_FILE = "index.txt"
 DEFAULT_NUM_EXAMPLES = 1
@@ -108,13 +110,21 @@ def main():
         f"{len(phrases)} phrases × {num_examples} example(s) → {output_path}\n"
     )
     all_cards = []
+    learned_now = []
     for p in phrases:
-        all_cards.extend(build_cards_for(p, num_examples=num_examples, prompt_name=prompt_name, model=model))
+        cards = build_cards_for(p, num_examples=num_examples, prompt_name=prompt_name, model=model)
+        if cards:
+            all_cards.extend(cards)
+            learned_now.append(p)
     if not all_cards:
         print("No cards built. Check API keys and input.")
         return
     build_deck(all_cards, str(output_path), deck_name=deck_name)
     print(f"\n✓ Wrote {len(all_cards)} cards → {output_path}")
+
+    record_learned(learned_now, LEARNED_FILE)
+    drop_lines_from_index(index_path, set(learned_now))
+    print(f"✓ Moved {len(learned_now)} phrase(s) to {LEARNED_FILE}")
 
 
 if __name__ == "__main__":
