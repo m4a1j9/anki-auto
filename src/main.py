@@ -12,7 +12,8 @@ from src.learned import record_learned, drop_lines_from_index, parse_index_line
 
 INPUT_ROOT = Path("input")
 OUTPUT_ROOT = Path("output")
-LEARNED_FILE = OUTPUT_ROOT / "learned.json"
+# Shared across projects in english-learning/
+LEARNED_FILE = Path(__file__).resolve().parents[2] / "learned.json"
 SETUP_FILE = "setup.toml"
 INDEX_FILE = "index.txt"
 DEFAULT_NUM_EXAMPLES = 1
