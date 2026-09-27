@@ -57,18 +57,27 @@ def build_cards_for(phrase: str, sentence: str | None, num_examples: int, prompt
         return []
 
     cards = []
-    for sentence in data["examples"]:
+    for ex in data["examples"]:
+        if isinstance(ex, dict):
+            sentence = ex["sentence"]
+            cloze = ex.get("cloze")
+        else:
+            sentence = ex
+            cloze = None
         try:
             audio = synthesize(sentence)
         except Exception as e:
             print(f"  ⚠ tts failed for '{sentence}': {e}")
             audio = None
-        cards.append({
+        card = {
             "target_expression": data["phrase"],
             "definition": data["definition"],
             "example_sentence": sentence,
             "audio_file": audio,
-        })
+        }
+        if cloze:
+            card["cloze"] = cloze
+        cards.append(card)
     return cards
 
 

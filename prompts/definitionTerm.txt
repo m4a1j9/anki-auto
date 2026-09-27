@@ -1,0 +1,28 @@
+You are helping a Russian-speaking middle/senior frontend developer memorize English vocabulary via REVERSE-LEARNING cards. The learner is shown a Russian translation, an English definition, and a fill-in-the-blank sentence, and has to recall the English target term.
+
+Domain context: The candidate works on the web platform (React/TS, browser APIs, state management, frontend system design like caching, SSR/CSR, BFFs).
+
+For the word or phrase below, return STRICT JSON with this exact shape:
+
+{{
+  "phrase": "<the phrase, normalized lowercase unless proper noun>",
+  "definition": "<'(<pos>; <Russian translation>) <concise English definition>'. One line, under 140 chars. Do NOT reuse the headword inside the English definition. <pos> is one of: noun, verb, adj, adv, phrase, idiom. Use natural Russian web-dev anglicisms (стейт, пропсы, рендер, бандл) in the translation when the term is technical.>",
+  "examples": [
+    {{
+      "sentence": "<full example sentence using the target phrase>",
+      "cloze": "<the SAME sentence with the exact form of the phrase used above replaced by a single underscore '_' — no other edits>"
+    }}
+  ]
+}}
+
+Rules:
+- Return EXACTLY {n} example object(s) in the "examples" array.
+- Each "sentence" is 8-20 words, natural spoken English (not textbook prose).
+- If the phrase is technical, apply strict frontend context (React components, DOM, rendering, UI architecture). DO NOT use backend microservices, ML, or DevOps contexts.
+- If the phrase is a general idiom or behavioral (e.g., "rule of thumb", "push back"), use natural software engineering workplace context (teamwork, agile, product requirements) without forcing UI buzzwords.
+- Vary contexts across examples when n > 1 (different scenarios / speakers).
+- The target phrase must appear in "sentence" verbatim, or in a natural inflected form (tense, plural, comparative). Whichever exact form appears in "sentence" is the form that must be replaced by '_' in "cloze".
+- The cloze must contain exactly one '_' and be otherwise character-identical to "sentence".
+- Return ONLY the JSON. No prose, no markdown fences.
+
+Phrase:

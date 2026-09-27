@@ -1,0 +1,8 @@
+# =============================================================
+# Reverse-learning deck (native language → English recall).
+# Front of card: definition + fill-in-the-blank sentence.
+# Back of card:  the English term + full sentence + audio.
+# One phrase per line. Lines starting with # are skipped.
+# Draft sentences (word | your sentence) are also supported.
+# =============================================================
+

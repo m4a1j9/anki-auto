@@ -2,6 +2,32 @@ import hashlib
 import genanki
 
 MODEL_ID = 1872934401
+DEF_TERM_MODEL_ID = 1872934402
+
+_SHARED_CSS = (
+    ".card {\n"
+    "font-size: 23px;\n"
+    "text-align: left;\n"
+    "color: black;\n"
+    "background-color: #FFFAF0;\n"
+    "font-family: Times New Roman;\n"
+    "}\n\n"
+    ".sentence {\n"
+    "font-size: 30px;\n"
+    "}\n\n"
+    ".definition {\n"
+    "font-size: 23px;\n"
+    "}\n\n"
+    ".term {\n"
+    "font-size: 30px;\n"
+    "}\n\n"
+    "img {\n"
+    "width: auto;\n"
+    "height: auto;\n"
+    "max-width: 900px;\n"
+    "max-height: 450px;\n"
+    "}\n"
+)
 
 MODEL = genanki.Model(
     MODEL_ID,
@@ -29,27 +55,40 @@ MODEL = genanki.Model(
             ),
         }
     ],
-    css=(
-        ".card {\n"
-        "font-size: 23px;\n"
-        "text-align: left;\n"
-        "color: black;\n"
-        "background-color: #FFFAF0;\n"
-        "font-family: Times New Roman;\n"
-        "}\n\n"
-        ".sentence {\n"
-        "font-size: 30px;\n"
-        "}\n\n"
-        ".definition {\n"
-        "font-size: 23px;\n"
-        "}\n\n"
-        "img {\n"
-        "width: auto;\n"
-        "height: auto;\n"
-        "max-width: 900px;\n"
-        "max-height: 450px;\n"
-        "}\n"
-    ),
+    css=_SHARED_CSS,
+)
+
+DEF_TERM_MODEL = genanki.Model(
+    DEF_TERM_MODEL_ID,
+    "Definition-Term",
+    fields=[
+        {"name": "Definition"},
+        {"name": "Cloze"},
+        {"name": "Term"},
+        {"name": "Sentence"},
+        {"name": "Audio"},
+    ],
+    templates=[
+        {
+            "name": "Card 1",
+            "qfmt": (
+                '<div class=definition>{{Definition}}</div>'
+                '<br>'
+                '<div class=sentence>{{Cloze}}</div>'
+            ),
+            "afmt": (
+                '<div class=definition>{{Definition}}</div>'
+                '<br>'
+                '<div class=sentence>{{Cloze}}</div>'
+                '<hr>'
+                '<div class=term><b>{{Term}}</b></div>'
+                '<br>'
+                '<div class=sentence>{{Sentence}}</div>'
+                '{{Audio}}'
+            ),
+        }
+    ],
+    css=_SHARED_CSS,
 )
 
 
@@ -65,17 +104,30 @@ def build_deck(cards: list[dict], out_path: str, deck_name: str = "English::phra
 
     for c in cards:
         audio_tag = f"[sound:{c['audio_file']}]" if c.get("audio_file") else ""
-        note = genanki.Note(
-            model=MODEL,
-            fields=[
-                c["example_sentence"],
-                c["target_expression"],
-                c["definition"],
-                audio_tag,
-                "",
-            ],
-            guid=genanki.guid_for(c["target_expression"], c["example_sentence"]),
-        )
+        if "cloze" in c:
+            note = genanki.Note(
+                model=DEF_TERM_MODEL,
+                fields=[
+                    c["definition"],
+                    c["cloze"],
+                    c["target_expression"],
+                    c["example_sentence"],
+                    audio_tag,
+                ],
+                guid=genanki.guid_for(c["target_expression"], c["example_sentence"], "def-term"),
+            )
+        else:
+            note = genanki.Note(
+                model=MODEL,
+                fields=[
+                    c["example_sentence"],
+                    c["target_expression"],
+                    c["definition"],
+                    audio_tag,
+                    "",
+                ],
+                guid=genanki.guid_for(c["target_expression"], c["example_sentence"]),
+            )
         deck.add_note(note)
         if c.get("audio_file"):
             media_files.append(f"media/{c['audio_file']}")

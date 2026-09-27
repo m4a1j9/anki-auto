@@ -1,0 +1,42 @@
+You are helping a Russian-speaking middle/senior frontend developer memorize English vocabulary via REVERSE-LEARNING cards. The learner is shown a Russian translation, an English definition, and a fill-in-the-blank sentence, and has to recall the English target term.
+
+Goal: the learner wants to speak broad, natural English, not just "developer English". Every word should be learned in its NATURAL HABITAT: the context where native speakers most often actually use it. The learner's job (web platform: React/TS, browser APIs, state, SSR/CSR, caching) is only a secondary context, used when the phrase genuinely lives there too.
+
+STEP 1: Classify the phrase (do this silently; record the result in "domain"):
+- TECH: the term is native to software/web (e.g., "debounce", "hydration", "memoize", "race condition"). Its home IS tech. Use frontend context (components, DOM, rendering, UI architecture); avoid backend microservices, ML, or DevOps.
+- CROSSOVER: a general word or idiom that engineers also commonly use, often figuratively (e.g., "bottleneck", "trade-off", "push back", "rule of thumb", "leverage"). Its home is outside tech: pick that home first (e.g., "bottleneck": traffic, a narrow road, a busy kitchen); tech/workplace is secondary.
+- GENERAL: everyday, emotional, social, or domain-specific vocabulary with no natural tech use (e.g., "grudge", "sip", "haggle", "sprain", "wholesome"). Use ONLY its real-life domains. NEVER put it in a software, office, or team setting.
+
+Home domains to draw from: everyday life, home & family, friendships & relationships, emotions & character, food & cooking, shopping & money, health & body, travel & transport, nature & weather, sports & hobbies, work in general (any profession, not just IT), business & finance, law & politics, media & culture, school & childhood.
+
+For the word or phrase below, return STRICT JSON with this exact shape:
+
+{{
+  "domain": "<TECH | CROSSOVER | GENERAL> — <the home domain(s) you chose, e.g. 'CROSSOVER — traffic; team workflow'>",
+  "phrase": "<the phrase, normalized lowercase unless proper noun>",
+  "definition": "<'(<pos>; <Russian translation>) <concise English definition>'. One line, under 140 chars. Do NOT reuse the headword inside the English definition. <pos> is one of: noun, verb, adj, adv, phrase, idiom.>",
+  "examples": [
+    {{
+      "sentence": "<full example sentence using the target phrase>",
+      "cloze": "<the SAME sentence with the exact form of the phrase used above replaced by a single underscore '_' — no other edits>"
+    }}
+  ]
+}}
+
+Definition rules:
+- Define the MOST COMMON general sense of the phrase, not the tech sense, unless the phrase is TECH.
+- Russian translation: the natural everyday Russian equivalent. Use web-dev anglicisms (стейт, пропсы, рендер, бандл) ONLY for TECH phrases. If there is no single-word equivalent, give a short natural paraphrase; for idioms, prefer a matching Russian idiom if one exists.
+- Every example must illustrate the SAME sense the definition describes. Never switch meanings between the definition and a sentence.
+
+Example rules:
+- Return EXACTLY {n} example object(s) in the "examples" array.
+- Each "sentence" is 8-20 words, natural spoken English (not textbook prose): something a real person would say or write in that situation.
+- The first example ALWAYS uses the phrase's home domain.
+- If more than one example is requested, each further example uses a DIFFERENT domain/scenario. For CROSSOVER phrases, at most one example may be a tech/workplace one, and only if a native-speaking engineer would naturally say it without it sounding forced. TECH phrases may stay in frontend context but should vary the scenario (debugging, code review, design discussion, explaining to a PM).
+- Make the blank guessable: the surrounding context should point to this phrase and rule out close synonyms, but must not contain the phrase itself or an obvious derivative of it.
+- Avoid sameness: vary the speaker (friend, parent, doctor, coach, shop owner, colleague...), person (I / you / she / they), sentence type (statement, question, exclamation, reported speech), and openings. Do not start with stock openers like "The team...", "We need to...", "Our app...", "In the meeting...".
+- The target phrase must appear in "sentence" verbatim, or in a natural inflected form (tense, plural, comparative, possessive). Whichever exact form appears in "sentence" is the form that must be replaced by '_' in "cloze".
+- The cloze must contain exactly one '_' and be otherwise character-identical to "sentence".
+- Return ONLY the JSON. No prose, no markdown fences.
+
+Phrase:

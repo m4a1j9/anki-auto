@@ -9,6 +9,8 @@ setup           = { cmd = "pip install -r requirements.txt",                  he
 build           = { cmd = "python -m src.main",                               help = "Build any deck. Usage: poe build -- -p <deck/path> [-n <examples>]." }
 build-interview = { cmd = "python -m src.main -p English/phrases/interview",  help = "Build the tech-interview deck." }
 build-common    = { cmd = "python -m src.main -p English/common",             help = "Build the everyday-vocab deck." }
+build-def-term  = { cmd = "python -m src.main -p English/definition-term",    help = "Build the reverse-learning (definition → term) deck." }
+say             = { cmd = "python -m src.say",                                help = "Synthesize one sentence to mp3. Usage: poe say -- \"your sentence\"." }
 
 [tool.poe.tasks.clean]
 cmd = "python -c \"import shutil; [shutil.rmtree(d, ignore_errors=True) for d in ('output', 'media')]\""
